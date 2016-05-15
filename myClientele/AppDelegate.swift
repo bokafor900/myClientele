@@ -8,15 +8,24 @@
 
 import UIKit
 import CoreData
+import CoreLocation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    let APP_ID = "5A90049B-74AC-6189-FF49-752D15B0C400"
+    let SECRET_KEY = "DEF31DE7-DD93-A6CC-FFBA-E13CDF95D400"
+    let VERSION_NUM = "v1"
+    
+    var backendless = Backendless.sharedInstance()
 
     var window: UIWindow?
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        backendless.initApp(APP_ID, secret:SECRET_KEY, version:VERSION_NUM)
+        Firebase.defaultConfig().persistenceEnabled = true
+
         return true
     }
 
