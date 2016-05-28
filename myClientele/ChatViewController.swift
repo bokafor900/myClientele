@@ -391,6 +391,7 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
     }
     // if have image user is going to replace it with the new one
     func avatarImageFromBackendlessUser(user: BackendlessUser)  {
+        
         if let imageLink = user.getProperty("Avatar") {
             getImageFromURL(imageLink as! String, result: { (image) -> Void in
                 let imageData = UIImageJPEGRepresentation(image!, 1.0)
