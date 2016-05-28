@@ -25,5 +25,3 @@
 #import <JSQMessagesViewController/JSQMessages.h>
 #import "ProgressHUD.h"
 #import "IDMPhotoBrowser.h"
-
-

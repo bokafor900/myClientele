@@ -10,7 +10,6 @@ import UIKit
 
 class recentCell: UITableViewCell {
     
-    let backendless = Backendless.sharedInstance()
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var lastMsgLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
@@ -50,6 +49,11 @@ class recentCell: UITableViewCell {
             let withUser = users.data.first as! BackendlessUser // I added a ? mark here. I may have to change this back to !
             
             //use withUser to get our avatar
+            if let avatarURL = withUser.getProperty("Avatar") {
+                getImageFromURL(avatarURL as! String, result: { (image) -> Void in
+                    self.avatarImageView.image = image
+                })
+            }
             
             }) { (fault: Fault!) -> Void in
                 print("error, could not get user avatar: \(fault)")

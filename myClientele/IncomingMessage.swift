@@ -81,7 +81,7 @@ class IncomingMessage {
     
     func returnOutgoingStatusFromUser(senderId: String) -> Bool {
         
-        if senderId == currentUser.objectId {
+        if senderId == backendless.userService.currentUser.objectId {
             //outgoing
             return true
         } else {

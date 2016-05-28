@@ -1,4 +1,4 @@
-//
+ //
 //  AppDelegate.swift
 //  myClientele
 //
@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 import CoreLocation
+ 
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
@@ -22,7 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     let SECRET_KEY = "DEF31DE7-DD93-A6CC-FFBA-E13CDF95D400"
     let VERSION_NUM = "v1"
     
-    var backendless = Backendless.sharedInstance()
 
     var window: UIWindow?
 

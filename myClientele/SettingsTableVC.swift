@@ -55,9 +55,10 @@ class SettingsTableVC: UITableViewController, UINavigationControllerDelegate, UI
             avatarSwitchStatus = true
         } else {
             avatarSwitchStatus = false
-            print("it's off")
+            print("it off")
         }
         // save user defaults
+        saveUserDefaults()
     }
     
 
@@ -145,9 +146,9 @@ class SettingsTableVC: UITableViewController, UINavigationControllerDelegate, UI
             
             let properties = ["Avatar" : imageLink!]
             
-            currentUser!.updateProperties(properties)
+            backendless.userService.currentUser!.updateProperties(properties)
             
-            backendless.userService.update(currentUser, response: { (updatedUser: BackendlessUser!) -> Void in
+            backendless.userService.update(backendless.userService.currentUser, response: { (updatedUser: BackendlessUser!) -> Void in
               
                 print(" Updated current user \(updatedUser)")
                 }, error: { (fault : Fault!) -> Void in
@@ -163,11 +164,11 @@ class SettingsTableVC: UITableViewController, UINavigationControllerDelegate, UI
     //MARK: UpdateUI
     func updateUI() {
         
-        userNameLabel.text = currentUser.name
+        userNameLabel.text = backendless.userService.currentUser.name
         
         avatarSwitch.setOn(avatarSwitchStatus, animated: false)
         
-        if let imageLink = currentUser.getProperty("Avatar") {
+        if let imageLink = backendless.userService.currentUser.getProperty("Avatar") {
             getImageFromURL(imageLink as! String, result: { (image) -> Void in
                 self.imageUser.image = image
             })

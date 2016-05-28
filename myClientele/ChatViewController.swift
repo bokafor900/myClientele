@@ -10,6 +10,7 @@ import UIKit
 
 class ChatViewController: JSQMessagesViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
+    let userDefaults = NSUserDefaults.standardUserDefaults()
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     let ref = Firebase(url: "https://myclientele.firebaseio.com/Message")
@@ -21,7 +22,7 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
     var avatarImagesDictionary: NSMutableDictionary?
     var avatarDictionary: NSMutableDictionary?
     
-    var showAvatars: Bool = true
+    var showAvatars: Bool = false
     var firstLoad: Bool?
     
     var withUser: BackendlessUser?
@@ -34,11 +35,22 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleBlueColor())
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
 
+    override func viewWillAppear(animated: Bool) {
+        //check user defaults
+        loadUserDefaults()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        //update Recent
+        ClearRecentCounter(chatRoomId)
+        ref.removeAllObservers()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.senderId = currentUser.objectId
-        self.senderDisplayName = currentUser.name
+        self.senderId = backendless.userService.currentUser.objectId
+        self.senderDisplayName = backendless.userService.currentUser.name
         
         collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
@@ -72,7 +84,7 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
         
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
         let data = messages[indexPath.row]
-        if data.senderId == currentUser.objectId {
+        if data.senderId == backendless.userService.currentUser.objectId {
             cell.textView?.textColor = UIColor.whiteColor()
         } else {
             cell.textView?.textColor = UIColor.blackColor()
@@ -96,12 +108,12 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
         
     }
     
-    override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
+    override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) ->JSQMessageBubbleImageDataSource! {
         
         let data = messages[indexPath.row]
         
         
-        if data.senderId == currentUser.objectId {
+        if data.senderId == backendless.userService.currentUser.objectId {
             return outgoingBubble
         } else {
             return incomingBubble
@@ -208,7 +220,7 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
         //if text message
         if let text = text {
             // send text message
-            outgoingMessage = OutgoingMessage(message: text, senderId: currentUser.objectId!, senderName: currentUser.name!, date: date, status: "Delivered", type: "text")
+            outgoingMessage = OutgoingMessage(message: text, senderId: backendless.userService.currentUser.objectId!, senderName: backendless.userService.currentUser.name!, date: date, status: "Delivered", type: "text")
         }
         
         //send picture message
@@ -216,7 +228,7 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
             // send picture message
             let imageData = UIImageJPEGRepresentation(pic, 1.0)
             
-            outgoingMessage = OutgoingMessage(message: "Picture", pictureData: imageData!, senderId: currentUser.objectId!, senderName: currentUser.name!, date: date, status: "Delivered", type: "picture")
+            outgoingMessage = OutgoingMessage(message: "Picture", pictureData: imageData!, senderId: backendless.userService.currentUser.objectId!, senderName: backendless.userService.currentUser.name!, date: date, status: "Delivered", type: "picture")
         }
         
         if let loc = location {
@@ -224,7 +236,7 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
             let lat: NSNumber = NSNumber(double: (appDelegate.coordinate?.latitude)!)
             let lng: NSNumber = NSNumber(double: (appDelegate.coordinate?.longitude)!)
             
-            outgoingMessage = OutgoingMessage(message: "Location", latitude: lat, longitude: lng, senderId: currentUser.objectId!, senderName: currentUser.name, date: date, status: "Delivered", type: "location")
+            outgoingMessage = OutgoingMessage(message: "Location", latitude: lat, longitude: lng, senderId: backendless.userService.currentUser.objectId!, senderName: backendless.userService.currentUser.name, date: date, status: "Delivered", type: "location")
         }
         
         //play message sent sound
@@ -237,18 +249,6 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
     //MARK: Load Messages
     
     func loadMessages() {
-        
-        ref.childByAppendingPath(chatRoomId).observeSingleEventOfType(.Value, withBlock: {
-            snapshot in
-         
-            //get dictionaries
-            
-            //create JSQ mesaages
-            
-            self.insertMessages()
-            self.finishReceivingMessageAnimated(true)
-            self.initialLoadComplete = true
-        })
         
         ref.childByAppendingPath(chatRoomId).observeEventType(.ChildAdded, withBlock: {
             snapshot in
@@ -284,6 +284,18 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
             
             //Delete message
         })
+        
+        ref.childByAppendingPath(chatRoomId).observeSingleEventOfType(.Value, withBlock: {
+            snapshot in
+            
+            //get dictionaries
+            
+            //create JSQ mesaages
+            
+            self.insertMessages()
+            self.finishReceivingMessageAnimated(true)
+            self.initialLoadComplete = true
+        })
     }
     
     func insertMessages() {
@@ -309,7 +321,7 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
     
     func incoming(item: NSDictionary) -> Bool {
         
-        if self.senderId == item["senderId"] as! String {
+        if backendless.userService.currentUser.objectId == item["senderId"] as! String {
             return false
         } else {
             return true
@@ -319,7 +331,7 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
     
     func outgoing(item: NSDictionary) -> Bool {
         
-        if self.senderId == item["senderId"] as! String {
+        if backendless.userService.currentUser.objectId == item["senderId"] as! String {
             return true
         } else {
             return false
@@ -339,11 +351,13 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
     
     func getAvatars() {
         if showAvatars {
+            
+            print("showAvatar")
             collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSizeMake(30, 30)
             collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSizeMake(30, 30)
             
             //download avatars
-            avatarImageFromBackendlessUser(currentUser)
+            avatarImageFromBackendlessUser(backendless.userService.currentUser)
             avatarImageFromBackendlessUser(withUser!)
             
             //create avatars
@@ -370,11 +384,11 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
     }
     
     func createAvatars(avatars: NSMutableDictionary?) {
-        var currentUserAvatar = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage (named: "avatarPlaceholder"), diameter: 70)
-        var withUserAvatar = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage (named: "avatarPlaceholder"), diameter: 70)
+        var currentUserAvatar = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage (named: "profile2"), diameter: 70)
+        var withUserAvatar = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage (named: "profile2"), diameter: 70)
         
         if let avat = avatars {
-            if let currentUserAvatarImage = avat.objectForKey(currentUser.objectId) {
+            if let currentUserAvatarImage = avat.objectForKey(backendless.userService.currentUser.objectId) {
                 currentUserAvatar = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(data: currentUserAvatarImage as! NSData), diameter: 70)
                 self.collectionView?.reloadData()
             }
@@ -387,7 +401,7 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
             }
         }
         
-        avatarDictionary = [currentUser.objectId : currentUserAvatar, withUser!.objectId! : withUserAvatar]
+        avatarDictionary = [backendless.userService.currentUser.objectId : currentUserAvatar, withUser!.objectId! : withUserAvatar]
     }
     // if have image user is going to replace it with the new one
     func avatarImageFromBackendlessUser(user: BackendlessUser)  {
@@ -454,6 +468,20 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
             let mapView = segue.destinationViewController as! mapVC
             mapView.location = mediaItem.location
         }
+    }
+    
+    //MARK: UserDefaults functions
+    
+    func loadUserDefaults() {
+        
+        firstLoad = userDefaults.boolForKey(kFIRSTRUN)
+        if !firstLoad! {
+            userDefaults.setBool(true, forKey: kFIRSTRUN)
+            userDefaults.setBool(showAvatars, forKey: kAVATARSTATE)
+            userDefaults.synchronize()
+        }
+        
+        showAvatars = userDefaults.boolForKey(kAVATARSTATE)
     }
 
 }

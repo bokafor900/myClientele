@@ -8,13 +8,12 @@
 
 import UIKit
 
-class registerVC: UIViewController {
+class registerVC: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
-    var backendless = Backendless.sharedInstance()
     
     var newUser: BackendlessUser?
     var email: String?
@@ -53,12 +52,57 @@ class registerVC: UIViewController {
         }
     }
 
+    @IBAction func uploadPhotoButtonPressed(sender: AnyObject) {
+        
+        let camera = Camera(delegate_: self)
+        
+        let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+        let takePhoto = UIAlertAction(title: "Take Photo", style: .Default) { (alert: UIAlertAction!) -> Void in
+            camera.PresentPhotoCamera(self, canEdit: true)
+        }
+        
+        let sharePhoto = UIAlertAction(title: "Photo Library", style: .Default) { (alert : UIAlertAction!) -> Void in
+            camera.PresentPhotoLibrary(self, canEdit: true)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (aler : UIAlertAction!) -> Void in
+            print("Cancelled")
+        }
+        
+        optionMenu.addAction(takePhoto)
+        optionMenu.addAction(sharePhoto)
+        optionMenu.addAction(cancelAction)
+        
+        self.presentViewController(optionMenu, animated: true, completion: nil)
+    }
+    
+    //MARK: UIImagePickerControllerDelegate
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        self.avatarImage = (info[UIImagePickerControllerEditedImage] as! UIImage)
+        
+        picker.dismissViewControllerAnimated(true, completion: nil)
+    }
 
     //MARK: Backendless user registration
     func register(email: String, username: String, password: String, avatarImage: UIImage?) {
         
         if avatarImage == nil {
             newUser!.setProperty("Avatar", object: "")
+        } else {
+            
+            uploadAvatar(avatarImage!, result: { (imageLink) -> Void in
+                let properties = ["Avatar" : imageLink!]
+                
+                backendless.userService.currentUser!.updateProperties(properties)
+                
+                backendless.userService.update(backendless.userService.currentUser, response: { (updatedUser: BackendlessUser!) -> Void in
+                    print("Updated current user avatar")
+                    }, error: { (fault : Fault!) -> Void in
+                        print("Error could not set avatar image \(fault)")
+                })
+            })
         }
         
         newUser!.email = email
@@ -76,8 +120,8 @@ class registerVC: UIViewController {
             self.passwordTextField.text = ""
             self.emailTextField.text = ""
             
-        }) { (fault : Fault!) -> Void in
-            print("Server reported an error, could not register new user: \(fault)")
+            }) { (fault : Fault!) -> Void in
+                print("Server reported an error, could not register new user: \(fault)")
         }
         
     }
@@ -90,8 +134,8 @@ class registerVC: UIViewController {
             let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("ChatVC") as! UITabBarController
             self.presentViewController(vc, animated: true, completion: nil)
             
-        }) { (fault : Fault!) -> Void in
-            print("Server reported an error: \(fault)")
+            }) { (fault : Fault!) -> Void in
+                print("Server reported an error: \(fault)")
         }
         
     }

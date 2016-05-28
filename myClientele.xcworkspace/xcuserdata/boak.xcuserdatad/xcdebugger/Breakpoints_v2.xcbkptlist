@@ -42,13 +42,61 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "myClientele/recent.swift"
-            timestampString = "484969059.031302"
+            timestampString = "486153713.879571"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "110"
-            endingLineNumber = "110"
+            startingLineNumber = "109"
+            endingLineNumber = "109"
             landmarkName = "UpdateRecentItem(_:lastMessage:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "myClientele/ChatViewController.swift"
+            timestampString = "486153433.962447"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "234"
+            endingLineNumber = "234"
+            landmarkName = "sendMessage(_:date:picture:location:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "myClientele.ChatViewController.sendMessage (Swift.Optional&lt;Swift.String&gt;, date : __ObjC.NSDate, picture : Swift.Optional&lt;__ObjC.UIImage&gt;, location : Swift.Optional&lt;Swift.String&gt;) -&gt; ()"
+                  moduleName = "myClientele"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/boak/Desktop/AppProject/myClientele/myClientele/ChatViewController.swift"
+                  timestampString = "486153434.964233"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "234"
+                  endingLineNumber = "234"
+                  offsetFromSymbolStart = "3254">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "myClientele.ChatViewController.sendMessage (Swift.Optional&lt;Swift.String&gt;, date : __ObjC.NSDate, picture : Swift.Optional&lt;__ObjC.UIImage&gt;, location : Swift.Optional&lt;Swift.String&gt;) -&gt; ()"
+                  moduleName = "myClientele"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/boak/Desktop/AppProject/myClientele/myClientele/ChatViewController.swift"
+                  timestampString = "486153434.969114"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "234"
+                  endingLineNumber = "234"
+                  offsetFromSymbolStart = "3334">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

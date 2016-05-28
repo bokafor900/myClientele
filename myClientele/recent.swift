@@ -15,7 +15,6 @@ public let kFIRSTRUN = "firstRun"
 
 let firebase = Firebase(url: "https://myclientele.firebaseio.com")
 let backendless = Backendless.sharedInstance()
-let currentUser = backendless.userService.currentUser
 
 //MARK: Create Chatroom
 
@@ -113,7 +112,7 @@ func UpdateRecentItem(recent: NSDictionary, lastMessage: String) {
     
     var counter = recent["counter"] as! Int
     
-    if recent["userId"] as? String != currentUser.objectId {
+    if recent["userId"] as? String != backendless.userService.currentUser.objectId {
         counter++
     }
     
@@ -134,9 +133,9 @@ func RestartRecentChat(recent: NSDictionary) {
     
     for userId in recent["members"] as! [String] {
         
-        if userId != currentUser.objectId {
+        if userId != backendless.userService.currentUser.objectId {
             
-            CreateRecent(userId, chatRoomID: (recent["chatRoomID"] as? String)!, members: recent["members"] as! [String], withUserUsername: currentUser.name, withUserUserId: currentUser.objectId)
+            CreateRecent(userId, chatRoomID: (recent["chatRoomID"] as? String)!, members: recent["members"] as! [String], withUserUsername: backendless.userService.currentUser.name, withUserUserId: backendless.userService.currentUser.objectId)
         }
     }
     
@@ -152,6 +151,30 @@ func DeleteRecentItem(recent: NSDictionary) {
     }
     
 }
+
+//MARK: Clear recent counter function
+func ClearRecentCounter(chatRoomID: String) {
+    firebase.childByAppendingPath("Recent").queryOrderedByChild("chatRoomID").queryEqualToValue(chatRoomID).observeSingleEventOfType(.Value, withBlock: { snapshot in
+        if snapshot.exists() {
+            for recent in snapshot.value.allValues {
+                if recent.objectForKey("userId") as? String == backendless.userService.currentUser.objectId {
+                   //clear counter
+                    ClearRecentCounterItem(recent as! NSDictionary)
+                }
+            }
+        }
+        
+    })
+}
+
+func ClearRecentCounterItem(recent: NSDictionary) {
+    firebase.childByAppendingPath("Recent").childByAppendingPath(recent["recentId"] as? String).updateChildValues(["counter" : 0]) { (error, ref) -> Void in
+        if error != nil {
+            print("Error could not update recents counter: \(error.localizedDescription)")
+        }
+    }
+}
+
 
 //MARK: Helper functions
 

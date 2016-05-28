@@ -10,15 +10,13 @@ import UIKit
 
 class welcomeVC: UIViewController {
     
-    let backendless = Backendless.sharedInstance()
-    var currentUser: BackendlessUser?
+
     
     override func viewWillAppear(animated: Bool) {
         backendless.userService.setStayLoggedIn(true)
         
-        currentUser = backendless.userService.currentUser
         
-        if currentUser != nil {
+        if backendless.userService.currentUser != nil {
            
             dispatch_async(dispatch_get_main_queue()) {
                 

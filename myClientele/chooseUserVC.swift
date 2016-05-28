@@ -74,7 +74,7 @@ class chooseUserVC: UIViewController, UITableViewDelegate, UITableViewDataSource
     
     func loadUsers() {
         
-        let whereClause = "objectId != '\(currentUser.objectId)'"
+        let whereClause = "objectId != '\(backendless.userService.currentUser.objectId)'"
         
         let dataQuery = BackendlessDataQuery()
         dataQuery.whereClause = whereClause
