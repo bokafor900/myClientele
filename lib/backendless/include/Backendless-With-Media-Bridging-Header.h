@@ -24,4 +24,6 @@
 #import <Firebase/Firebase.h>
 #import <JSQMessagesViewController/JSQMessages.h>
 #import "ProgressHUD.h"
+#import "IDMPhotoBrowser.h"
+
 

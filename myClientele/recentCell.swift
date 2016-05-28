@@ -47,7 +47,7 @@ class recentCell: UITableViewCell {
         
         dataStore.find(dataQuery, response: { (users : BackendlessCollection!) -> Void in
             
-            let withUser = users.data.first as! BackendlessUser
+            let withUser = users.data.first as! BackendlessUser // I added a ? mark here. I may have to change this back to !
             
             //use withUser to get our avatar
             

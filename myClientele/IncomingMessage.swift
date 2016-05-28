@@ -29,9 +29,12 @@ class IncomingMessage {
         }
         if type == "location" {
             //create location message
+            message = createLocationMessage(dictionary)
+            
         }
         if type == "picture" {
             //create picture message
+            message = createPictureMessage(dictionary)
         }
         
         if let mes = message {
@@ -41,6 +44,7 @@ class IncomingMessage {
         return nil
     }
     
+    // Text message function
     func createTextMessage(item: NSDictionary) -> JSQMessage {
         
         let name = item["senderName"] as? String
@@ -51,4 +55,70 @@ class IncomingMessage {
         
         return JSQMessage(senderId: userId, senderDisplayName: name, date: date, text: text)
     }
+    
+    // Location message function
+    func createLocationMessage(item : NSDictionary) -> JSQMessage {
+        
+        let name = item["senderName"] as? String
+        let userId = item["senderId"] as? String
+        let date = dateFormatter().dateFromString((item["date"] as? String)!)
+        
+        let latitude = item["latitude"] as? Double
+        let longitude = item["longitude"] as? Double
+        
+        let mediaItem = JSQLocationMediaItem(location: nil)
+        mediaItem.appliesMediaViewMaskAsOutgoing = returnOutgoingStatusFromUser(userId!)
+        
+        let location = CLLocation(latitude: latitude!, longitude: longitude!)
+        
+        mediaItem.setLocation(location) { () -> Void in
+            // update our collectionView
+            self.collectionView.reloadData()
+        }
+        
+        return JSQMessage(senderId: userId!, senderDisplayName: name!, date: date, media: mediaItem)
+    }
+    
+    func returnOutgoingStatusFromUser(senderId: String) -> Bool {
+        
+        if senderId == currentUser.objectId {
+            //outgoing
+            return true
+        } else {
+            return false
+        }
+    }
+    // Picture message function
+    func createPictureMessage(item: NSDictionary) -> JSQMessage {
+        
+        let name = item["senderName"] as? String
+        let userId = item["senderId"] as? String
+        
+        let date = dateFormatter().dateFromString((item["date"] as? String)!)
+        
+        let mediaItem = JSQPhotoMediaItem(image: nil)
+        mediaItem.appliesMediaViewMaskAsOutgoing = returnOutgoingStatusFromUser(userId!)
+        
+        imageFromData(item) { (image: UIImage?) -> Void in
+            mediaItem.image = image
+            self.collectionView.reloadData()
+        }
+        
+        return JSQMessage(senderId: userId, senderDisplayName: name!, date: date, media: mediaItem)
+        
+        
+    }
+    
+    func imageFromData(item: NSDictionary, result: (image: UIImage?) -> Void) {
+        
+        var image: UIImage?
+        
+        let decodedData = NSData(base64EncodedString: (item["picture"] as? String)!,  options: NSDataBase64DecodingOptions(rawValue: 0))
+        
+        image = UIImage(data: decodedData!)
+        
+        result(image: image)
+        
+    }
+    
 }

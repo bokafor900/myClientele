@@ -8,6 +8,11 @@
 
 import Foundation
 
+//---------Constants--------\\
+public let kAVATARSTATE = "avatarState"
+public let kFIRSTRUN = "firstRun"
+//------------\\
+
 let firebase = Firebase(url: "https://myclientele.firebaseio.com")
 let backendless = Backendless.sharedInstance()
 let currentUser = backendless.userService.currentUser

@@ -11,7 +11,12 @@ import CoreData
 import CoreLocation
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
+    
+    //setup plist to get location working
+    //NSLocationWhenInUseUsageDescription = your text
+    var locationManager: CLLocationManager?
+    var coordinate: CLLocationCoordinate2D?
     
     let APP_ID = "5A90049B-74AC-6189-FF49-752D15B0C400"
     let SECRET_KEY = "DEF31DE7-DD93-A6CC-FFBA-E13CDF95D400"
@@ -45,12 +50,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+        locationManagerStart()
     }
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
         self.saveContext()
+        locationManagerStop()
+    }
+    
+    //MARK: LocationManager Functions
+    
+    func locationManagerStart() {
+        
+        if locationManager == nil {
+            print("init locationManager")
+            locationManager = CLLocationManager()
+            locationManager?.delegate = self
+            locationManager!.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager!.requestWhenInUseAuthorization()
+        }
+        
+        print("have location manager")
+        locationManager!.startUpdatingLocation()
+        
+    }
+    
+    func locationManagerStop() {
+        
+        locationManager!.stopUpdatingLocation()
+        
+    }
+    
+    //MARK: CLLocationManagerDelegate
+    
+    func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation) {
+        
+        coordinate = newLocation.coordinate
     }
 
     // MARK: - Core Data stack
