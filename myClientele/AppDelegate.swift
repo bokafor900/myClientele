@@ -9,6 +9,8 @@
 import UIKit
 import CoreData
 import CoreLocation
+import Firebase
+import FirebaseDatabase
  
 
 @UIApplicationMain
@@ -28,8 +30,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        
+        FIRApp.configure()
+        
         backendless.initApp(APP_ID, secret:SECRET_KEY, version:VERSION_NUM)
-        Firebase.defaultConfig().persistenceEnabled = true
+//        Firebase.defaultConfig().persistenceEnabled = true
+        FIRDatabase.database().persistenceEnabled = true
+        
+        //Reload for push notification
+        let types: UIUserNotificationType = [.Alert, .Badge, .Sound]
+        let settings = UIUserNotificationSettings(forTypes: types, categories: nil)
+        
+        application.registerUserNotificationSettings(settings)
+        application.registerForRemoteNotifications()
+        
+        if let launchOptions = launchOptions as? [String: AnyObject] {
+            if let notificationDictionary = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey] as? [NSObject : AnyObject] {
+                self.application(application, didReceiveRemoteNotification: notificationDictionary)
+            }
+        }
 
         return true
     }
@@ -51,14 +70,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         
+        application.applicationIconBadgeNumber = 0
         locationManagerStart()
     }
+    
+
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
         self.saveContext()
         locationManagerStop()
+    }
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        
+        backendless.messagingService.registerDeviceToken(deviceToken)
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        
+        if application.applicationState == UIApplicationState.Active {
+            //app was already active
+        } else {
+            //push handling
+        }
+    }
+    
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        
+        print("could not register for notification : \(error.localizedDescription)")
     }
     
     //MARK: LocationManager Functions

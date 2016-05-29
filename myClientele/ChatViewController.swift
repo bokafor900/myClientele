@@ -13,7 +13,7 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
     let userDefaults = NSUserDefaults.standardUserDefaults()
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
-    let ref = Firebase(url: "https://myclientele.firebaseio.com/Message")
+    let ref = firebase.child("Message")
     
     var messages: [JSQMessage] = []
     var objects: [NSDictionary] = []
@@ -231,7 +231,7 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
             outgoingMessage = OutgoingMessage(message: "Picture", pictureData: imageData!, senderId: backendless.userService.currentUser.objectId!, senderName: backendless.userService.currentUser.name!, date: date, status: "Delivered", type: "picture")
         }
         
-        if let loc = location {
+        if let _ = location {
             //senf location message
             let lat: NSNumber = NSNumber(double: (appDelegate.coordinate?.latitude)!)
             let lng: NSNumber = NSNumber(double: (appDelegate.coordinate?.longitude)!)
@@ -250,7 +250,7 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
     
     func loadMessages() {
         
-        ref.childByAppendingPath(chatRoomId).observeEventType(.ChildAdded, withBlock: {
+        ref.child(chatRoomId).observeEventType(.ChildAdded, withBlock: {
             snapshot in
          
             if snapshot.exists() {
@@ -273,19 +273,19 @@ class ChatViewController: JSQMessagesViewController, UINavigationControllerDeleg
             }
         })
         
-        ref.childByAppendingPath(chatRoomId).observeEventType(.ChildChanged, withBlock: {
+        ref.child(chatRoomId).observeEventType(.ChildChanged, withBlock: {
             snapshot in
             
             //update message
         })
         
-        ref.childByAppendingPath(chatRoomId).observeEventType(.ChildRemoved, withBlock: {
+        ref.child(chatRoomId).observeEventType(.ChildRemoved, withBlock: {
             snapshot in
             
             //Delete message
         })
         
-        ref.childByAppendingPath(chatRoomId).observeSingleEventOfType(.Value, withBlock: {
+        ref.child(chatRoomId).observeSingleEventOfType(.Value, withBlock: {
             snapshot in
             
             //get dictionaries

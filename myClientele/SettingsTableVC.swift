@@ -142,6 +142,8 @@ class SettingsTableVC: UITableViewController, UINavigationControllerDelegate, UI
         
         let image = info[UIImagePickerControllerEditedImage] as! UIImage
         
+        imageUser.image = image
+        
         uploadAvatar(image) { (imageLink) -> Void in
             
             let properties = ["Avatar" : imageLink!]
@@ -194,7 +196,12 @@ class SettingsTableVC: UITableViewController, UINavigationControllerDelegate, UI
     }
     
     func logOut() {
+        
+        removeDeviceIdFromUser()
+        
         backendless.userService.logout()
+        
+        PushUserResign()
         
         //show login view
         let loginView = storyboard!.instantiateViewControllerWithIdentifier("LoginView")

@@ -41,6 +41,8 @@ class loginVC: UIViewController {
             //login user
             loginUser(email!, password: password!)
             
+            UIApplication.sharedApplication().registerForRemoteNotifications()
+            
         } else {
             // show error to user
             ProgressHUD.showError("All fields are required")
@@ -53,6 +55,8 @@ class loginVC: UIViewController {
             
             self.emailTextField.text = ""
             self.passwordTextField.text = ""
+            
+            registerUserDeviceId()
             
             //segue to recents views
             let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("ChatVC") as! UITabBarController

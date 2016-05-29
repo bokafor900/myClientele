@@ -1,3 +1,4 @@
 pod 'JSQMessagesViewController'
 pod 'IDMPhotoBrowser'
-pod 'Firebase'
+pod 'Firebase/Core'
+pod 'Firebase/Database'

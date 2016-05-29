@@ -33,6 +33,9 @@
 		C5D773661CE3FC2100DB849B /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D773651CE3FC2100DB849B /* ChatViewController.swift */; };
 		C5D773681CE68DA400DB849B /* OutgoingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D773671CE68DA400DB849B /* OutgoingMessage.swift */; };
 		C5D7736A1CE7F50400DB849B /* IncomingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D773691CE7F50400DB849B /* IncomingMessage.swift */; };
+		C5EF69FB1CFACEB400952A62 /* RegisterUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5EF69FA1CFACEB400952A62 /* RegisterUser.swift */; };
+		C5EF69FD1CFB606700952A62 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5EF69FC1CFB606700952A62 /* PushNotification.swift */; };
+		C5EF6A011CFB76EF00952A62 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C5EF6A001CFB76EF00952A62 /* GoogleService-Info.plist */; };
 		C5F0F1751CF7A6BF003FC8DD /* Avatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F0F1741CF7A6BF003FC8DD /* Avatar.swift */; };
 		C5F0F2451CFA15FB003FC8DD /* backendless.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5F0F1781CFA15FB003FC8DD /* backendless.a */; };
 		C5F0F2461CFA15FB003FC8DD /* CommLibiOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5F0F1BD1CFA15FB003FC8DD /* CommLibiOS.a */; };
@@ -98,6 +101,9 @@
 		C5D773651CE3FC2100DB849B /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		C5D773671CE68DA400DB849B /* OutgoingMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutgoingMessage.swift; sourceTree = "<group>"; };
 		C5D773691CE7F50400DB849B /* IncomingMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncomingMessage.swift; sourceTree = "<group>"; };
+		C5EF69FA1CFACEB400952A62 /* RegisterUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterUser.swift; sourceTree = "<group>"; };
+		C5EF69FC1CFB606700952A62 /* PushNotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotification.swift; sourceTree = "<group>"; };
+		C5EF6A001CFB76EF00952A62 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C5F0F1741CF7A6BF003FC8DD /* Avatar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Avatar.swift; sourceTree = "<group>"; };
 		C5F0F1781CFA15FB003FC8DD /* backendless.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = backendless.a; sourceTree = "<group>"; };
 		C5F0F1791CFA15FB003FC8DD /* AbstractProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractProperty.h; sourceTree = "<group>"; };
@@ -373,11 +379,8 @@
 			isa = PBXGroup;
 			children = (
 				C5D771621CE2B42C00DB849B /* AppDelegate.swift */,
-				C5D7735D1CE3B93C00DB849B /* recent.swift */,
-				C5D773671CE68DA400DB849B /* OutgoingMessage.swift */,
-				C5D773691CE7F50400DB849B /* IncomingMessage.swift */,
-				C50FD3191CEA3CA3004E493B /* Camera.swift */,
-				C5F0F1741CF7A6BF003FC8DD /* Avatar.swift */,
+				C5EF69FF1CFB6EDA00952A62 /* Utilities */,
+				C5EF69FE1CFB6EAA00952A62 /* Messages */,
 				C5D7735C1CE3AD5700DB849B /* UIViewController */,
 				C5D7735B1CE3AD4600DB849B /* CustomTableViewCell */,
 				C5D7735A1CE3AD2200DB849B /* Login */,
@@ -385,6 +388,7 @@
 				C5D7716C1CE2B42C00DB849B /* Assets.xcassets */,
 				C5D7716E1CE2B42C00DB849B /* LaunchScreen.storyboard */,
 				C5D771711CE2B42C00DB849B /* Info.plist */,
+				C5EF6A001CFB76EF00952A62 /* GoogleService-Info.plist */,
 				C5D771691CE2B42C00DB849B /* myClientele.xcdatamodeld */,
 			);
 			path = myClientele;
@@ -446,6 +450,27 @@
 				C50FD31D1CEA6768004E493B /* SettingsTableVC.swift */,
 			);
 			name = UIViewController;
+			sourceTree = "<group>";
+		};
+		C5EF69FE1CFB6EAA00952A62 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				C5D773671CE68DA400DB849B /* OutgoingMessage.swift */,
+				C5D773691CE7F50400DB849B /* IncomingMessage.swift */,
+			);
+			name = Messages;
+			sourceTree = "<group>";
+		};
+		C5EF69FF1CFB6EDA00952A62 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				C5D7735D1CE3B93C00DB849B /* recent.swift */,
+				C50FD3191CEA3CA3004E493B /* Camera.swift */,
+				C5F0F1741CF7A6BF003FC8DD /* Avatar.swift */,
+				C5EF69FA1CFACEB400952A62 /* RegisterUser.swift */,
+				C5EF69FC1CFB606700952A62 /* PushNotification.swift */,
+			);
+			name = Utilities;
 			sourceTree = "<group>";
 		};
 		C5F0F1BB1CFA15FB003FC8DD /* include */ = {
@@ -884,6 +909,12 @@
 				TargetAttributes = {
 					C5D7715E1CE2B42C00DB849B = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = QH8GCHK9JS;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					C5D771751CE2B42C00DB849B = {
 						CreatedOnToolsVersion = 7.3;
@@ -922,6 +953,7 @@
 			files = (
 				C5D773541CE2F71300DB849B /* ProgressHUD.bundle in Resources */,
 				C5D771701CE2B42C00DB849B /* LaunchScreen.storyboard in Resources */,
+				C5EF6A011CFB76EF00952A62 /* GoogleService-Info.plist in Resources */,
 				C5D7716D1CE2B42C00DB849B /* Assets.xcassets in Resources */,
 				C5D771681CE2B42C00DB849B /* Main.storyboard in Resources */,
 			);
@@ -997,10 +1029,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5D773551CE2F71300DB849B /* ProgressHUD.m in Sources */,
+				C5EF69FB1CFACEB400952A62 /* RegisterUser.swift in Sources */,
 				C5D7734B1CE2CC3100DB849B /* welcomeVC.swift in Sources */,
 				C50FD31E1CEA6768004E493B /* SettingsTableVC.swift in Sources */,
 				C5F0F1751CF7A6BF003FC8DD /* Avatar.swift in Sources */,
 				C5D773661CE3FC2100DB849B /* ChatViewController.swift in Sources */,
+				C5EF69FD1CFB606700952A62 /* PushNotification.swift in Sources */,
 				C5D773621CE3D5B900DB849B /* chooseUserVC.swift in Sources */,
 				C5D7735E1CE3B93C00DB849B /* recent.swift in Sources */,
 				C50FD31C1CEA5424004E493B /* mapVC.swift in Sources */,
@@ -1167,7 +1201,7 @@
 					"$(PROJECT_DIR)/lib/x264/lib",
 					"$(PROJECT_DIR)/lib/**",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.oakware.myClientele;
+				PRODUCT_BUNDLE_IDENTIFIER = com.backendless.myClientelePushNotify;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/lib/backendless/include/Backendless-With-Media-Bridging-Header.h";
 			};
@@ -1190,7 +1224,7 @@
 					"$(PROJECT_DIR)/lib/x264/lib",
 					"$(PROJECT_DIR)/lib/**",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.oakware.myClientele;
+				PRODUCT_BUNDLE_IDENTIFIER = com.backendless.myClientelePushNotify;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/lib/backendless/include/Backendless-With-Media-Bridging-Header.h";
 			};

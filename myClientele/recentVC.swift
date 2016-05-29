@@ -12,11 +12,14 @@ class recentVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Ch
 
     @IBOutlet weak var tableView: UITableView!
     
+    
     var recents: [NSDictionary] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        //register for remote notification on first run only
+        //UIApplication.sharedApplication().registerForRemoteNotifications()
         loadRecents()
     }
 
@@ -128,19 +131,20 @@ class recentVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Ch
     
     func loadRecents() {
         
-        firebase.childByAppendingPath("Recent").queryOrderedByChild("userId").queryEqualToValue(backendless.userService.currentUser.objectId).observeEventType(.Value, withBlock: { snapshot in
+        firebase.child("Recent").queryOrderedByChild("userId").queryEqualToValue(backendless.userService.currentUser.objectId).observeEventType(.Value, withBlock: { snapshot in
             self.recents.removeAll()
             
             if snapshot.exists() {
                 
-                let sorted = (snapshot.value.allValues as NSArray).sortedArrayUsingDescriptors([NSSortDescriptor(key: "data", ascending: false)])
+                //create array and add sorted recents with (date)
+                let sorted = (snapshot.value!.allValues as NSArray).sortedArrayUsingDescriptors([NSSortDescriptor(key: "data", ascending: false)])
                 
+                //add every recent to array
                 for recent in sorted {
                     self.recents.append(recent as! NSDictionary)
                     
-                    //add function to have offline access as well
-                    
-                    firebase.childByAppendingPath("Recent").queryOrderedByChild("chatRoomID").queryEqualToValue(recent["chatRoomID"]).observeEventType(.Value, withBlock: {
+                    //do the recent of other user to we need this for offline using
+                    firebase.child("Recent").queryOrderedByChild("chatRoomID").queryEqualToValue(recent["chatRoomID"]).observeEventType(.Value, withBlock: {
                         snapshot in
                     })
                 }

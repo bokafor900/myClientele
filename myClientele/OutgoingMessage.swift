@@ -10,7 +10,8 @@ import Foundation
 
 class OutgoingMessage {
     
-    private let firebase = Firebase(url: "https://myclientele.firebaseio.com/Message")
+ //   private let firebase = Firebase(url: "https://myclientele.firebaseio.com/Message")
+    private let ref = firebase.child("Message")
     
     let messageDictionary: NSMutableDictionary
     //Text message
@@ -34,7 +35,7 @@ class OutgoingMessage {
     
     func sendMessage(chatRoomID: String, item: NSMutableDictionary) {
         
-        let reference = firebase.childByAppendingPath(chatRoomID).childByAutoId()
+        let reference = ref.child(chatRoomID).childByAutoId()
         
         item["messageId"] = reference.key
         
@@ -46,6 +47,7 @@ class OutgoingMessage {
         }
         
         //send push notification
+        SendPushNotification(chatRoomID, message: (item["message"] as? String)!)
         UpdateRecents(chatRoomID, lastMessage: (item["message"] as? String)!)
     }
     
